@@ -51,7 +51,7 @@ def loot(cookies, publishers):
             'div[data-a-target=offer-list-InGameLoot] div.offer')
 
         for i in range(len(elements)):
-            log.debug("Get N-Elem {}".format(i))
+            log.debug("Get N-Elem %d", i)
 
             elem = page.query_selector_all(
                 f'div[data-a-target=offer-list-InGameLoot] div.offer')[i]
@@ -62,15 +62,13 @@ def loot(cookies, publishers):
             game_name = elem.query_selector('h3').text_content()
 
             if elem.query_selector('div[data-a-target=offer-claim-success]'):
-                log.debug("Already claimed {} by {}".format(
-                    game_name, publisher))
+                log.debug("Already claimed %s by %s", game_name, publisher)
                 continue
             if publisher not in publishers:
                 continue
 
             with page.expect_navigation():
-                log.debug("Try to claim {} from {}".format(
-                    game_name, publisher))
+                log.debug("Try to claim %s from %s", game_name, publisher)
                 elem.query_selector(
                     'button[data-a-target=ExternalOfferClaim]').click()
             page.wait_for_selector(
@@ -82,14 +80,14 @@ def loot(cookies, publishers):
                 for loot_card in loot_cards:
                     loot_name = loot_card.query_selector(
                         'h3[data-a-target=LootCardSubtitle]').text_content()
-                    log.debug("Try to claim loot  from {} by {}".format(
-                        loot_name, game_name, publisher))
+                    log.debug("Try to claim loot  from %s by %s",
+                              loot_name, game_name, publisher)
 
                     claim_button = loot_card.query_selector(
                         'button[data-test-selector=AvailableButton]')
                     if not claim_button:
                         log.warning(
-                            "Could not claim {} from {} by {} (in-game loot)".format(loot_name, game_name, publisher))
+                            "Could not claim %s from %s by %s (in-game loot)", loot_name, game_name, publisher)
                         continue
 
                     claim_button.click()
@@ -97,14 +95,13 @@ def loot(cookies, publishers):
 
                     # validate
                     if page.query_selector('div.gms-success-modal-container'):
-                        log.info("Claimed {} ({})".format(
-                            loot_name, game_name))
+                        log.info("Claimed %s (%s)", loot_name, game_name)
                     if page.query_selector("div[data-test-selector=ProgressBarSection]"):
                         log.warning(
-                            "Could not claim {} from {} by {} (account not connected)".format(loot_name, game_name, publisher))
+                            "Could not claim %s from %s by %s (account not connected)", loot_name, game_name, publisher)
                     else:
                         log.warning(
-                            "Could not claim {} from {} by {} (unknown error)".format(loot_name, game_name, publisher))
+                            "Could not claim %s from %s by %s (unknown error)", loot_name, game_name, publisher)
                     if page.query_selector('button[data-a-target=close-modal-button]'):
                         page.query_selector(
                             'button[data-a-target=close-modal-button]').click()
@@ -127,13 +124,12 @@ def loot(cookies, publishers):
             game_name = elem.query_selector('h3').text_content()
 
             if elem.query_selector('div[data-a-target=offer-claim-success]'):
-                log.debug("Already claimed {} by {}".format(
-                    game_name, publisher))
+                log.debug("Already claimed %s by %s", game_name, publisher)
                 continue
 
-            log.debug("Try to claim {}".format(game_name))
+            log.debug("Try to claim %s", game_name)
             elem.query_selector("button[data-a-target=FGWPOffer]").click()
-            log.info("Claimed {}".format(game_name))
+            log.info("Claimed %s", game_name)
 
         context.close()
         browser.close()
@@ -143,19 +139,19 @@ def read_cookiefile(path: str) -> typing.List[Cookie]:
     jar = cookiejar.MozillaCookieJar(path)
     jar.load()
 
-    cookies: typing.List[Cookie] = list()
+    _cookies: typing.List[Cookie] = list()
 
-    for c in jar:
+    for _c in jar:
         cookie = Cookie(
-            name=c.name,
-            value=c.value,
-            domain=c.domain,
-            path=c.path,
-            expires=c.expires,
-            secure=c.secure,
+            name=_c.name,
+            value=_c.value,
+            domain=_c.domain,
+            path=_c.path,
+            expires=_c.expires,
+            secure=_c.secure
         )
-        cookies.append(cookie)
-    return cookies
+        _cookies.append(cookie)
+    return _cookies
 
 
 if __name__ == "__main__":
@@ -195,7 +191,7 @@ if __name__ == "__main__":
             except AuthException:
                 log.error("Authentication failed!")
             except Exception as ex:
-                log.error("Error {}".format(ex))
+                log.error("Error %s", ex)
                 traceback.print_tb(ex.__traceback__)
                 time.sleep(1)
                 continue
