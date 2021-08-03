@@ -1,0 +1,16 @@
+# Netscape HTTP Cookie File
+# https://curl.haxx.se/rfc/cookie_spec.html
+# This is a generated file! Do not edit.
+
+.amazon.com	TRUE	/	TRUE	1644954859	x-main	"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+.amazon.com	TRUE	/	FALSE	1651302891	s_vn	1234567890123%21xx%1X1
+.amazon.com	TRUE	/	FALSE	1714374894	s_dslv	1234567890123
+.amazon.com	TRUE	/	FALSE	1777731342	s_fid	1X1X1X1X1X1X1X1X1-1X1X1X1X1X1X1X1
+.amazon.com	TRUE	/	FALSE	2082787201	lc-main	en_US
+.amazon.com	TRUE	/	FALSE	1651872771	i18n-prefs	USD
+.gaming.amazon.com	TRUE	/	TRUE	1654210777	unique_id	xxxxxxxxxxxxxxxx
+.amazon.com	TRUE	/	FALSE	1659720276	aws-target-data	%XX%XXsupport%XX%XX%XXX%XX%XX
+.amazon.com	TRUE	/	FALSE	1657560470	regStatus	pre-register
+.amazon.com	TRUE	/	TRUE	1658539157	ubid-main	123-4567890-1234567
+.amazon.com	TRUE	/	FALSE	2082787201	session-id	123-4567890-1234567
+.amazon.com	TRUE	/	FALSE	2082787201	session-token	"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"

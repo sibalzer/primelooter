@@ -1,0 +1,11 @@
+version: "3"
+services:
+  fesniper:
+    container_name: primelooter
+    image: ghcr.io/sibalzer/primelooter:latest
+    restart: unless-stopped
+    volumes:
+      - ./cookies.txt:/app/cookies.txt # must exist before launching
+      - ./publishers.txt:/app/publishers.txt # must exist before launching
+    environment:
+      - TZ=Europe/Berlin
