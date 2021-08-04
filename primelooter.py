@@ -26,9 +26,9 @@ class AuthException(Exception):
     pass
 
 
-def loot(cookies, publishers):
+def loot(cookies, publishers, headless):
     with sync_playwright() as playwright:
-        browser: Browser = playwright.firefox.launch(headless=False)
+        browser: Browser = playwright.firefox.launch(headless=headless)
         context = browser.new_context()
         context.add_cookies(cookies)
         page = context.new_page()
@@ -172,8 +172,15 @@ if __name__ == "__main__":
                         dest='loop',
                         help='Shall the script loop itself? (Cooldown 24h)',
                         required=False,
-                        action=argparse.BooleanOptionalAction,
+                        action='store_true',
                         default=False)
+    parser.add_argument('-nh', '--no-headless',
+                        dest='headless',
+                        help='Shall the script not use headless mode?',
+                        required=False,
+                        action='store_true',
+                        default=True)
+
     arg = vars(parser.parse_args())
 
     cookies = read_cookiefile(arg['cookies'])
@@ -181,12 +188,13 @@ if __name__ == "__main__":
     with open(arg['publishers']) as f:
         publishers = f.readlines()
     publishers = [x.strip() for x in publishers]
+    headless = arg['headless']
 
     if arg['loop']:
         while True:
             try:
                 log.info("start looting")
-                loot(cookies, publishers)
+                loot(cookies, publishers, headless)
                 log.info("ended looting")
             except AuthException:
                 log.error("Authentication failed!")
@@ -198,6 +206,6 @@ if __name__ == "__main__":
             time.sleep(60*60*24)
     else:
         try:
-            loot(cookies, publishers)
+            loot(cookies, publishers, headless)
         except AuthException:
             log.error("Authentication failed!")
