@@ -19,12 +19,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
           changelog-path: CHANGELOG.md
-          package-name: impfbot
+          package-name: primelooter
 
       - name: Set up QEMU
+        if: ${{ steps.release.outputs.release_created }}
         uses: docker/setup-qemu-action@v1
 
       - name: Set up Docker Buildx
+        if: ${{ steps.release.outputs.release_created }}
         uses: docker/setup-buildx-action@v1
 
       - name: Login to GitHub Container Registry
@@ -40,8 +42,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: docker/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          file: Dockerfile
+          platforms: linux/amd64
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:latest
