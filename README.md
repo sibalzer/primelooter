@@ -1,12 +1,10 @@
-# [WIP] Primelooter
+# Primelooter
 
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/sibalzer/primelooter?label=version)
 [![Python](https://img.shields.io/badge/Made%20with-Python%203.x-blue.svg?style=flat-square&logo=Python&logoColor=white)](https://www.python.org/)
 [![GitHub license](https://img.shields.io/github/license/sibalzer/impfbot)](https://github.com/sibalzer/primelooter/blob/main/LICENSE)
 
-python bot which claims twitch prime gaming loot
-
-still wip (not fully tested)
+Python bot which automatically claims ~~twitch~~ amazon prime gaming loot :D
 
 ## Usage
 
