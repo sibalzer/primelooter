@@ -54,7 +54,7 @@ def loot(cookies, publishers, headless):
             log.debug("Get N-Elem %d", i)
 
             elem = page.query_selector_all(
-                f'div[data-a-target=offer-list-InGameLoot] div.offer')[i]
+                'div[data-a-target=offer-list-InGameLoot] div.offer')[i]
             elem.scroll_into_view_if_needed()
             elem.wait_for_selector('p.tw-c-text-alt-2')
             publisher = elem.query_selector(
@@ -94,9 +94,12 @@ def loot(cookies, publishers, headless):
                     page.wait_for_load_state('networkidle')
 
                     # validate
+                    page.wait_for_selector(
+                        "div[data-a-target=gms-base-modal]")
+
                     if page.query_selector('div.gms-success-modal-container'):
                         log.info("Claimed %s (%s)", loot_name, game_name)
-                    if page.query_selector("div[data-test-selector=ProgressBarSection]"):
+                    elif page.query_selector("div[data-test-selector=ProgressBarSection]"):
                         log.warning(
                             "Could not claim %s from %s by %s (account not connected)", loot_name, game_name, publisher)
                     else:
@@ -109,7 +112,8 @@ def loot(cookies, publishers, headless):
                 print(ex)
             finally:
                 page.goto("https://gaming.amazon.com/home")
-                page.wait_for_load_state('networkidle')
+                page.wait_for_selector(
+                    'div[data-a-target=offer-list-InGameLoot] div.offer')
 
         # Games
         elements = page.query_selector_all(
@@ -201,7 +205,7 @@ if __name__ == "__main__":
             except Exception as ex:
                 log.error("Error %s", ex)
                 traceback.print_tb(ex.__traceback__)
-                time.sleep(1)
+                time.sleep(60)
                 continue
             time.sleep(60*60*24)
     else:
