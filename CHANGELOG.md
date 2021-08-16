@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.0.1](https://www.github.com/sibalzer/primelooter/compare/v1.0.0...v1.0.1) (2021-08-16)
+
+
+### Bug Fixes
+
+* adapted changes of the website ([a9e3363](https://www.github.com/sibalzer/primelooter/commit/a9e3363a6e139e9b22540770534df13bf4351001))
+
 ## 1.0.0 (2021-08-11)
 
 
