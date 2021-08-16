@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.0.2](https://www.github.com/sibalzer/primelooter/compare/v1.0.1...v1.0.2) (2021-08-16)
+
+
+### Bug Fixes
+
+* explicit wait for offer cards ([#3](https://www.github.com/sibalzer/primelooter/issues/3)) ([#5](https://www.github.com/sibalzer/primelooter/issues/5)) ([84db672](https://www.github.com/sibalzer/primelooter/commit/84db672673c7d9603c84a0e0feac446eb8340ab0))
+
 ### [1.0.1](https://www.github.com/sibalzer/primelooter/compare/v1.0.0...v1.0.1) (2021-08-16)
 
 
