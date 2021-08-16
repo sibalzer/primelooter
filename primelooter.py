@@ -49,6 +49,11 @@ def loot(cookies, publishers, headless):
         # Ingame Loot
         loot_offer_xpath = 'xpath=((//div[@data-a-target="offer-list-undefined"])[1] | //div[data-a-target="offer-list-InGameLoot"])//div[@data-test-selector="Offer"]'
 
+        try:
+            page.wait_for_selector(loot_offer_xpath, 1000*30)
+        except:
+            log.error("Could not load loot offers. (timeout)")
+
         elements = page.query_selector_all(loot_offer_xpath)
 
         if len(elements) == 0:
@@ -118,6 +123,11 @@ def loot(cookies, publishers, headless):
 
         # Games
         loot_offer_xpath = 'xpath=((//div[@data-a-target="offer-list-undefined"])[2] | //div[@data-a-target="offer-list-Game"])//div[@data-test-selector="Offer"]'
+
+        try:
+            page.wait_for_selector(loot_offer_xpath, 1000*30)
+        except:
+            log.error("Could not load game offers. (timeout)")
 
         elements = page.query_selector_all(loot_offer_xpath)
 
