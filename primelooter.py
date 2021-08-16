@@ -47,14 +47,16 @@ def loot(cookies, publishers, headless):
                 authenticated = True
 
         # Ingame Loot
-        elements = page.query_selector_all(
-            'div[data-a-target=offer-list-InGameLoot] div.offer')
+        loot_offer_xpath = 'xpath=((//div[@data-a-target="offer-list-undefined"])[1] | //div[data-a-target="offer-list-InGameLoot"])//div[@data-test-selector="Offer"]'
+
+        elements = page.query_selector_all(loot_offer_xpath)
+
+        if len(elements) == 0:
+            log.error(
+                "No loot offers found! Did they make some changes to the website? Please report @github if this happens multiple times.")
 
         for i in range(len(elements)):
-            log.debug("Get N-Elem %d", i)
-
-            elem = page.query_selector_all(
-                'div[data-a-target=offer-list-InGameLoot] div.offer')[i]
+            elem = page.query_selector_all(loot_offer_xpath)[i]
             elem.scroll_into_view_if_needed()
             elem.wait_for_selector('p.tw-c-text-alt-2')
             publisher = elem.query_selector(
@@ -80,7 +82,7 @@ def loot(cookies, publishers, headless):
                 for loot_card in loot_cards:
                     loot_name = loot_card.query_selector(
                         'h3[data-a-target=LootCardSubtitle]').text_content()
-                    log.debug("Try to claim loot  from %s by %s",
+                    log.debug("Try to claim loot %s from %s by %s",
                               loot_name, game_name, publisher)
 
                     claim_button = loot_card.query_selector(
@@ -112,12 +114,16 @@ def loot(cookies, publishers, headless):
                 print(ex)
             finally:
                 page.goto("https://gaming.amazon.com/home")
-                page.wait_for_selector(
-                    'div[data-a-target=offer-list-InGameLoot] div.offer')
+                page.wait_for_selector(loot_offer_xpath)
 
         # Games
-        elements = page.query_selector_all(
-            'div[data-a-target=offer-list-Game] div.offer')
+        loot_offer_xpath = 'xpath=((//div[@data-a-target="offer-list-undefined"])[2] | //div[@data-a-target="offer-list-Game"])//div[@data-test-selector="Offer"]'
+
+        elements = page.query_selector_all(loot_offer_xpath)
+
+        if len(elements) == 0:
+            log.error(
+                "No game offers found! Did they make some changes to the website? Please report @github if this happens multiple times.")
 
         for elem in elements:
             elem.scroll_into_view_if_needed()
@@ -182,7 +188,7 @@ if __name__ == "__main__":
                         dest='headless',
                         help='Shall the script not use headless mode?',
                         required=False,
-                        action='store_true',
+                        action='store_false',
                         default=True)
 
     arg = vars(parser.parse_args())
@@ -197,9 +203,9 @@ if __name__ == "__main__":
     if arg['loop']:
         while True:
             try:
-                log.info("start looting")
+                log.info("start looting cycle")
                 loot(cookies, publishers, headless)
-                log.info("ended looting")
+                log.info("finished looting cycle")
             except AuthException:
                 log.error("Authentication failed!")
             except Exception as ex:
