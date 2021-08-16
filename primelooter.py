@@ -26,7 +26,7 @@ class AuthException(Exception):
     pass
 
 
-def loot(cookies, publishers, headless):
+def loot(cookies, publishers, headless, dump):
     with sync_playwright() as playwright:
         browser: Browser = playwright.firefox.launch(headless=headless)
         context = browser.new_context()
@@ -50,9 +50,12 @@ def loot(cookies, publishers, headless):
         loot_offer_xpath = 'xpath=((//div[@data-a-target="offer-list-undefined"])[1] | //div[data-a-target="offer-list-InGameLoot"])//div[@data-test-selector="Offer"]'
 
         try:
-            page.wait_for_selector(loot_offer_xpath, 1000*30)
-        except:
+            page.wait_for_selector(loot_offer_xpath, timeout=1000*30)
+        except Exception as ex:
             log.error("Could not load loot offers. (timeout)")
+
+        if dump:
+            print(page.query_selector('div.home').inner_html())
 
         elements = page.query_selector_all(loot_offer_xpath)
 
@@ -125,7 +128,7 @@ def loot(cookies, publishers, headless):
         loot_offer_xpath = 'xpath=((//div[@data-a-target="offer-list-undefined"])[2] | //div[@data-a-target="offer-list-Game"])//div[@data-test-selector="Offer"]'
 
         try:
-            page.wait_for_selector(loot_offer_xpath, 1000*30)
+            page.wait_for_selector(loot_offer_xpath, timeout=1000*30)
         except:
             log.error("Could not load game offers. (timeout)")
 
@@ -194,6 +197,14 @@ if __name__ == "__main__":
                         required=False,
                         action='store_true',
                         default=False)
+
+    parser.add_argument('-d', '--dump',
+                        dest='dump',
+                        help='Dump html to output',
+                        required=False,
+                        action='store_true',
+                        default=False)
+
     parser.add_argument('-nh', '--no-headless',
                         dest='headless',
                         help='Shall the script not use headless mode?',
@@ -209,12 +220,13 @@ if __name__ == "__main__":
         publishers = f.readlines()
     publishers = [x.strip() for x in publishers]
     headless = arg['headless']
+    dump = arg['dump']
 
     if arg['loop']:
         while True:
             try:
                 log.info("start looting cycle")
-                loot(cookies, publishers, headless)
+                loot(cookies, publishers, headless, dump)
                 log.info("finished looting cycle")
             except AuthException:
                 log.error("Authentication failed!")
@@ -226,6 +238,6 @@ if __name__ == "__main__":
             time.sleep(60*60*24)
     else:
         try:
-            loot(cookies, publishers, headless)
+            loot(cookies, publishers, headless, dump)
         except AuthException:
             log.error("Authentication failed!")
