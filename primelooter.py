@@ -47,7 +47,7 @@ def loot(cookies, publishers, headless, dump):
                 authenticated = True
 
         # Ingame Loot
-        loot_offer_xpath = 'xpath=((//div[@data-a-target="offer-list-undefined"])[1] | //div[data-a-target="offer-list-InGameLoot"])//div[@data-test-selector="Offer"]'
+        loot_offer_xpath = 'xpath=(//div[@data-a-target="offer-list-InGameLoot"] | (//div[@data-a-target="offer-list-undefined"])[1])//div[@data-test-selector="Offer"]'
 
         try:
             page.wait_for_selector(loot_offer_xpath, timeout=1000*30)
@@ -125,7 +125,7 @@ def loot(cookies, publishers, headless, dump):
                 page.wait_for_selector(loot_offer_xpath)
 
         # Games
-        loot_offer_xpath = 'xpath=((//div[@data-a-target="offer-list-undefined"])[2] | //div[@data-a-target="offer-list-Game"])//div[@data-test-selector="Offer"]'
+        loot_offer_xpath = 'xpath=(//div[@data-a-target="offer-list-Game"] | (//div[@data-a-target="offer-list-undefined"])[2])//div[@data-test-selector="Offer"]'
 
         try:
             page.wait_for_selector(loot_offer_xpath, timeout=1000*30)
