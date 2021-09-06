@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://www.github.com/sibalzer/primelooter/compare/v1.0.2...v1.1.0) (2021-09-06)
+
+
+### Features
+
+* supports now 'all' entry in publishers.txt ([d9128fe](https://www.github.com/sibalzer/primelooter/commit/d9128fee9f24eadacd56b0db8ddd71eef8c92235))
+
+
+### Bug Fixes
+
+* bugfix for [#7](https://www.github.com/sibalzer/primelooter/issues/7) ([d9128fe](https://www.github.com/sibalzer/primelooter/commit/d9128fee9f24eadacd56b0db8ddd71eef8c92235))
+
 ### [1.0.2](https://www.github.com/sibalzer/primelooter/compare/v1.0.1...v1.0.2) (2021-08-16)
 
 
