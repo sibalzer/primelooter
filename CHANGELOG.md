@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.2](https://www.github.com/sibalzer/primelooter/compare/v1.1.1...v1.1.2) (2021-09-06)
+
+
+### Bug Fixes
+
+* publishers as class attribute ([8543726](https://www.github.com/sibalzer/primelooter/commit/8543726cff182d7009c435e0b8100cc1040a0872))
+
 ### [1.1.1](https://www.github.com/sibalzer/primelooter/compare/v1.1.0...v1.1.1) (2021-09-06)
 
 
