@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.1](https://www.github.com/sibalzer/primelooter/compare/v1.1.0...v1.1.1) (2021-09-06)
+
+
+### Bug Fixes
+
+* added typting module ([24a1109](https://www.github.com/sibalzer/primelooter/commit/24a1109f0dcea38a9d581c08653ff3f2b7d88ce5))
+
 ## [1.1.0](https://www.github.com/sibalzer/primelooter/compare/v1.0.2...v1.1.0) (2021-09-06)
 
 
