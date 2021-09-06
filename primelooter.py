@@ -164,7 +164,7 @@ class PrimeLooter():
 
         tab.close()
 
-    def run(self, publishers: list[str] = ['all'], dump: bool = False):
+    def run(self, dump: bool = False):
         self.auth()
 
         if dump:
