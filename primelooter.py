@@ -6,6 +6,7 @@ import time
 import traceback
 import typing
 import json
+import typing
 
 from playwright.sync_api import sync_playwright, Cookie, Browser, Page, BrowserContext, ElementHandle
 
@@ -63,7 +64,7 @@ class PrimeLooter():
             elif not response['isTwitchPrime']:
                 Exception('Authentication: Not a valid Twitch Prime account')
 
-    def get_offers(self) -> list[dict]:
+    def get_offers(self) -> typing.List:
         with self.page.expect_response(lambda response:  'https://gaming.amazon.com/graphql' in response.url and 'primeOffers' in response.json()['data']) as response_info:
             log.debug('get offers')
             self.page.goto('https://gaming.amazon.com/home')
