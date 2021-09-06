@@ -32,7 +32,7 @@ If you want to use the provided docker image (only linux/amd64 plattform for now
 
 ### 3. 🏢 Create a publishers.txt
 
-Create a publishers.txt like the example file. Each line represents the publisher name used on the [https://gaming.amazon.com](https://gaming.amazon.com) website.
+Create a publishers.txt like the example file. Each line represents the publisher name used on the [https://gaming.amazon.com](https://gaming.amazon.com) website (add 'all' to claim all offers).
 
 ### 4. 🏃 Run
 

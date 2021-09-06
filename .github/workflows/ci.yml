@@ -24,4 +24,4 @@ jobs:
           flake8 primelooter.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Lint with pylint
         run: |
-          pylint primelooter.py --fail-under 8
+          pylint primelooter.py --fail-under 10 --disable=all --enable=classes --disable=W
