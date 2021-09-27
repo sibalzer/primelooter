@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.3](https://www.github.com/sibalzer/primelooter/compare/v1.1.2...v1.1.3) (2021-09-27)
+
+
+### Bug Fixes
+
+* switch to chromium ([#11](https://www.github.com/sibalzer/primelooter/issues/11)) ([b4d7035](https://www.github.com/sibalzer/primelooter/commit/b4d70355e86099c9f217e410e0ba81361a6c2ffa))
+
 ### [1.1.2](https://www.github.com/sibalzer/primelooter/compare/v1.1.1...v1.1.2) (2021-09-06)
 
 
