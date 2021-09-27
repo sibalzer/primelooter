@@ -33,7 +33,7 @@ class PrimeLooter():
 
     def __enter__(self):
         self.playwright = sync_playwright()
-        self.browser: Browser = self.playwright.start().firefox.launch(
+        self.browser: Browser = self.playwright.start().chromium.launch(
             headless=self.headless)
         self.context: BrowserContext = self.browser.new_context()
         self.context.add_cookies(self.cookies)
@@ -304,3 +304,5 @@ if __name__ == "__main__":
         except Exception as ex:
             log.error("Error %s", ex)
             traceback.print_tb(ex.__traceback__)
+            raise ex
+ 
