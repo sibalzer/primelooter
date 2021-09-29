@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.4](https://www.github.com/sibalzer/primelooter/compare/v1.1.3...v1.1.4) (2021-09-29)
+
+
+### Bug Fixes
+
+* wrong logging file name ([#14](https://www.github.com/sibalzer/primelooter/issues/14)) ([9f81e26](https://www.github.com/sibalzer/primelooter/commit/9f81e260098049fec3d35380200deda4a30f5d10))
+
 ### [1.1.3](https://www.github.com/sibalzer/primelooter/compare/v1.1.2...v1.1.3) (2021-09-27)
 
 
