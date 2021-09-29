@@ -1,6 +1,6 @@
 version: "3"
 services:
-  fesniper:
+  primelooter:
     container_name: primelooter
     image: ghcr.io/sibalzer/primelooter:latest
     restart: unless-stopped
