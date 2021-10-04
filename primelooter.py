@@ -56,11 +56,13 @@ class PrimeLooter():
             self.page.goto('https://gaming.amazon.com/home')
             response = response_info.value.json()['data']['currentUser']
             if not response['isSignedIn']:
-                Exception('Authentication: Not signed in')
+                raise Exception('Authentication: Not signed in')
             elif not response['isAmazonPrime']:
-                Exception('Authentication: Not a valid Amazon Prime account')
+                raise Exception(
+                    'Authentication: Not a valid Amazon Prime account')
             elif not response['isTwitchPrime']:
-                Exception('Authentication: Not a valid Twitch Prime account')
+                raise Exception(
+                    'Authentication: Not a valid Twitch Prime account')
 
     def get_offers(self) -> typing.List:
         with self.page.expect_response(lambda response:  'https://gaming.amazon.com/graphql' in response.url and 'primeOffers' in response.json()['data']) as response_info:
