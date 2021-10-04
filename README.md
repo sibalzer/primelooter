@@ -41,7 +41,7 @@ The script offers multiple arguments:
 - -c | --cookie: Path to cookies.txt file
 - -p | --publishers: Path to publishers.txt file
 - -l | --loop: loops the script with a cooldown of 24h
-- --dump: print the http-index page (used for issues/website changes)
+- --dump: print the html-index page (used for issues/website changes)
 - -d | --debug: Print debug messages (used for issues)
 - -nh | --no-headless: starts the script with a visible browser (mainly for debugging)
 
