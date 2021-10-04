@@ -41,6 +41,8 @@ The script offers multiple arguments:
 - -c | --cookie: Path to cookies.txt file
 - -p | --publishers: Path to publishers.txt file
 - -l | --loop: loops the script with a cooldown of 24h
+- --dump: print the http-index page (used for issues/website changes)
+- -d | --debug: Print debug messages (used for issues)
 - -nh | --no-headless: starts the script with a visible browser (mainly for debugging)
 
 If you use docker simply start the container.
@@ -49,4 +51,10 @@ If you want to use cron.d instead of letting the script wait 24h you must create
 
 `0 0 * * * root : Primelooter ; /usr/bin/python3 /path/to/primelooter.py --cookie /path/to/cookie.txt --publishers /path/to/publishers.txt`
 
+
 <a href='https://ko-fi.com/balzer' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+
+
+## Disclaimer
+
+Use this bot at your own risk! For more information read the [license](LICENSE.md) file.

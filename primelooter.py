@@ -4,12 +4,10 @@ import logging
 import sys
 import time
 import traceback
-import typing
 import json
 import typing
 
-from playwright.sync_api import sync_playwright, Cookie, Browser, Page, BrowserContext, ElementHandle
-
+from playwright.sync_api import sync_playwright, Browser, BrowserContext, Cookie, Error, Page
 
 logging.basicConfig(
     level=logging.INFO,
@@ -75,28 +73,27 @@ class PrimeLooter():
         if offer['linkedJourney']:
             for suboffer in offer['linkedJourney']['offers']:
                 if suboffer['self']['eligibility']:
-                    return suboffer['self']['eligibility']['canClaim']
+                    if suboffer['self']['eligibility']['canClaim']:
+                        return True
             return False
-        elif offer['self']:
+        if offer['self']:
             return offer['self']['eligibility']['canClaim']
-        else:
-            raise Exception(
-                f'Could not check offer eligibility status\n{json.dumps(offer, indent=4)}')
+        raise Exception(
+            f'Could not check offer eligibility status\n{json.dumps(offer, indent=4)}')
 
     def claim_external(self, url, publisher):
         tab = self.context.new_page()
-
-        with tab.expect_response(lambda response:  'https://gaming.amazon.com/graphql' in response.url and 'journey' in response.json()['data']) as response_info:
-            log.debug('get game title')
-            tab.goto(url)
-            game_name = response_info.value.json(
-            )['data']['journey']['assets']['title']
-
-        log.debug("Try to claim %s from %s", game_name, publisher)
-        tab.wait_for_selector(
-            'div[data-a-target=loot-card-available]')
-
         try:
+            with tab.expect_response(lambda response:  'https://gaming.amazon.com/graphql' in response.url and 'journey' in response.json()['data']) as response_info:
+                log.debug('get game title')
+                tab.goto(url)
+                game_name = response_info.value.json(
+                )['data']['journey']['assets']['title']
+
+            log.debug("Try to claim %s from %s", game_name, publisher)
+            tab.wait_for_selector(
+                'div[data-a-target=loot-card-available]')
+
             loot_cards = tab.query_selector_all(
                 'div[data-a-target=loot-card-available]')
 
@@ -132,37 +129,43 @@ class PrimeLooter():
                 if tab.query_selector('button[data-a-target=close-modal-button]'):
                     tab.query_selector(
                         'button[data-a-target=close-modal-button]').click()
-        except Exception as ex:
+        except Error as ex:
             print(ex)
+            traceback.print_tb(ex.__traceback__)
             log.error(
-                f"An error occured ({publisher}/{game_name})! Did they make some changes to the website? Please report @github if this happens multiple times.")
-        tab.close()
+                "An error occured (%s/%s)! Did they make some changes to the website? Please report @github if this happens multiple times.", publisher, game_name)
+        finally:
+            tab.close()
 
     def claim_direct(self):
         tab = self.context.new_page()
-        tab.goto('https://gaming.amazon.com/home')
+        try:
+            tab.goto('https://gaming.amazon.com/home')
 
-        FGWP_XPATH = 'xpath=//button[@data-a-target="FGWPOffer"]/ancestor::div[@data-test-selector="Offer"]'
+            fgwp_xpath = 'xpath=//button[@data-a-target="FGWPOffer"]/ancestor::div[@data-test-selector="Offer"]'
 
-        elements = self.page.query_selector_all(FGWP_XPATH)
+            elements = self.page.query_selector_all(fgwp_xpath)
 
-        if len(elements) == 0:
-            log.error(
-                "No direct offers found! Did they make some changes to the website? Please report @github if this happens multiple times.")
+            if len(elements) == 0:
+                log.error(
+                    "No direct offers found! Did they make some changes to the website? Please report @github if this happens multiple times.")
 
-        for elem in elements:
-            elem.scroll_into_view_if_needed()
-            self.page.wait_for_load_state('networkidle')
+            for elem in elements:
+                elem.scroll_into_view_if_needed()
+                self.page.wait_for_load_state('networkidle')
 
-            publisher = elem.query_selector(
-                'p.tw-c-text-alt-2').text_content()
-            game_name = elem.query_selector('h3').text_content()
+                publisher = elem.query_selector(
+                    'p.tw-c-text-alt-2').text_content()
+                game_name = elem.query_selector('h3').text_content()
 
-            log.debug("Try to claim %s by %s", game_name, publisher)
-            elem.query_selector("button[data-a-target=FGWPOffer]").click()
-            log.info("Claimed %s by %s", game_name, publisher)
-
-        tab.close()
+                log.debug("Try to claim %s by %s", game_name, publisher)
+                elem.query_selector("button[data-a-target=FGWPOffer]").click()
+                log.info("Claimed %s by %s", game_name, publisher)
+        except Error as ex:
+            log.error(ex)
+            traceback.print_tb(ex.__traceback__)
+        finally:
+            tab.close()
 
     def run(self, dump: bool = False):
         self.auth()
@@ -172,7 +175,7 @@ class PrimeLooter():
         offers = self.get_offers()
 
         not_claimable_offers = [offer for offer in offers if offer.get(
-            'linkedJourney') == None and offer.get('self') == None]
+            'linkedJourney') is None and offer.get('self') is None]
         external_offers = [
             offer for offer in offers if offer['deliveryMethod'] == 'EXTERNAL_OFFER' and offer not in not_claimable_offers and PrimeLooter.check_eligibility(offer)]
         direct_offers = [
@@ -194,10 +197,10 @@ class PrimeLooter():
             log.info(msg)
             self.claim_direct()
         else:
-            log.info("No direct offers to Claim")
+            log.info("No direct offers to claim")
 
         # filter publishers
-        if not 'all' in self.publishers:
+        if 'all' not in self.publishers:
             external_offers = [offer for offer in external_offers if offer['content']
                                ['publisher'] in self.publishers]
 
@@ -210,14 +213,10 @@ class PrimeLooter():
             log.info(msg)
 
             for offer in external_offers:
-                try:
-                    if PrimeLooter.check_eligibility(offer):
-                        self.claim_external(
-                            offer['content']['externalURL'], offer['content']['publisher'])
-                except Exception as ex:
-                    log.error(ex)
+                self.claim_external(
+                    offer['content']['externalURL'], offer['content']['publisher'])
         else:
-            log.info("No external offers to Claim")
+            log.info("No external offers to claim")
 
 
 def read_cookiefile(path: str) -> typing.List[Cookie]:
@@ -260,9 +259,16 @@ if __name__ == "__main__":
                         action='store_true',
                         default=False)
 
-    parser.add_argument('-d', '--dump',
+    parser.add_argument('--dump',
                         dest='dump',
                         help='Dump html to output',
+                        required=False,
+                        action='store_true',
+                        default=False)
+
+    parser.add_argument('-d', '--debug',
+                        dest='debug',
+                        help='Print Log at debug level',
                         required=False,
                         action='store_true',
                         default=False)
@@ -283,6 +289,9 @@ if __name__ == "__main__":
     publishers = [x.strip() for x in publishers]
     headless = arg['headless']
     dump = arg['dump']
+
+    if arg['debug']:
+        log.level = logging.DEBUG
 
     if arg['loop']:
         while True:
@@ -305,4 +314,3 @@ if __name__ == "__main__":
             log.error("Error %s", ex)
             traceback.print_tb(ex.__traceback__)
             raise ex
- 
