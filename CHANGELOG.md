@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.2.1](https://www.github.com/sibalzer/primelooter/compare/v1.2.0...v1.2.1) (2021-10-04)
+
+
+### Bug Fixes
+
+* raise auth error ([74de12e](https://www.github.com/sibalzer/primelooter/commit/74de12eb1ae82519b189cf4377abf38a58a25234))
+
 ## [1.2.0](https://www.github.com/sibalzer/primelooter/compare/v1.1.4...v1.2.0) (2021-10-04)
 
 
