@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://www.github.com/sibalzer/primelooter/compare/v1.1.4...v1.2.0) (2021-10-04)
+
+
+### Features
+
+* parameter to show debug messages ([4948fc5](https://www.github.com/sibalzer/primelooter/commit/4948fc513553553985a3503055d0c93b5b68a421))
+
+
+### Bug Fixes
+
+* could not claim league loot ([4948fc5](https://www.github.com/sibalzer/primelooter/commit/4948fc513553553985a3503055d0c93b5b68a421))
+
 ### [1.1.4](https://www.github.com/sibalzer/primelooter/compare/v1.1.3...v1.1.4) (2021-09-29)
 
 
