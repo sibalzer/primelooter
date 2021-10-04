@@ -1,7 +1,7 @@
 # Primelooter
 
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/sibalzer/primelooter?label=version)
-[![Python](https://img.shields.io/badge/Made%20with-Python%203.x-blue.svg?style=flat-square&logo=Python&logoColor=white)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Made%20with-Python%203.9-blue.svg?style=flat-square&logo=Python&logoColor=white)](https://www.python.org/)
 [![GitHub license](https://img.shields.io/github/license/sibalzer/impfbot)](https://github.com/sibalzer/primelooter/blob/main/LICENSE)
 
 Python bot which automatically claims ~~twitch~~ amazon prime gaming loot :D
@@ -52,9 +52,8 @@ If you want to use cron.d instead of letting the script wait 24h you must create
 `0 0 * * * root : Primelooter ; /usr/bin/python3 /path/to/primelooter.py --cookie /path/to/cookie.txt --publishers /path/to/publishers.txt`
 
 
-<a href='https://ko-fi.com/balzer' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
-
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V44JB4A)
 
 ## Disclaimer
 
-Use this bot at your own risk! For more information read the [license](LICENSE.md) file.
+Use this bot at your own risk! For more information read the [license](LICENSE) file.
