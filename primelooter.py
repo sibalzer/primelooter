@@ -22,6 +22,10 @@ logging.basicConfig(
 log = logging.getLogger()
 
 
+class AuthException(Exception):
+    pass
+
+
 class PrimeLooter():
 
     def __init__(self, cookies, publishers='all', headless=True):
@@ -56,13 +60,14 @@ class PrimeLooter():
             self.page.goto('https://gaming.amazon.com/home')
             response = response_info.value.json()['data']['currentUser']
             if not response['isSignedIn']:
-                raise Exception('Authentication: Not signed in')
+                raise AuthException(
+                    'Authentication: Not signed in. (Please recreate the cookie.txt file)')
             elif not response['isAmazonPrime']:
-                raise Exception(
-                    'Authentication: Not a valid Amazon Prime account')
+                raise AuthException(
+                    'Authentication: Not a valid Amazon Prime account. (Loot can only be redeemed with an Amazon Prime Membership)')
             elif not response['isTwitchPrime']:
-                raise Exception(
-                    'Authentication: Not a valid Twitch Prime account')
+                raise AuthException(
+                    'Authentication: Not a valid Twitch Prime account. (Loot can only be redeemed with an Amazon Prime subscription and a connected Twitch Prime account)')
 
     def get_offers(self) -> typing.List:
         with self.page.expect_response(lambda response:  'https://gaming.amazon.com/graphql' in response.url and 'primeOffers' in response.json()['data']) as response_info:
@@ -302,8 +307,11 @@ if __name__ == "__main__":
                     log.info("start looting cycle")
                     looter.run(dump)
                     log.info("finished looting cycle")
+            except AuthException as ex:
+                log.error("%s", ex)
+                sys.exit(1)
             except Exception as ex:
-                log.error("Error %s", ex)
+                log.error("%s", ex)
                 traceback.print_tb(ex.__traceback__)
                 time.sleep(60)
                 continue
