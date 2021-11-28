@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://www.github.com/sibalzer/primelooter/compare/v1.2.2...v1.3.0) (2021-11-28)
+
+
+### Features
+
+* save codes in a text file ([b55e526](https://www.github.com/sibalzer/primelooter/commit/b55e5268d5284bddf9ab7d549a1daad165adefa6))
+
 ### [1.2.2](https://www.github.com/sibalzer/primelooter/compare/v1.2.1...v1.2.2) (2021-10-26)
 
 
