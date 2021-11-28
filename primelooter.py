@@ -49,6 +49,11 @@ class PrimeLooter():
         self.playwright.__exit__()
 
     @staticmethod
+    def code_to_file(game: str, code: str, instructions: str) -> None:
+        with open(f'./game_codes.txt', 'a') as f:
+            f.write(f"{game}: {code}\n ({instructions.replace('/n',' ')})")
+
+    @staticmethod
     def exists(tab: Page, selector: str) -> bool:
         if tab.query_selector(selector):
             return True
@@ -126,6 +131,18 @@ class PrimeLooter():
 
                 if PrimeLooter.exists(tab, 'div.gms-success-modal-container'):
                     log.info("Claimed %s (%s)", loot_name, game_name)
+
+                    if PrimeLooter.exists(tab, 'div.get-my-stuff-modal-code-success'):
+                        try:
+                            code = tab.query_selector(
+                                'div.get-my-stuff-modal-code div[data-a-target="copy-code-input"] input').get_attribute('value').strip()
+                            instructions = tab.query_selector(
+                                'div[data-a-target=gms-claim-instructions]').inner_text().strip()
+                            PrimeLooter.code_to_file(
+                                game_name, code, instructions)
+                        except Exception as e:
+                            log.warning(
+                                "Could not get code for %s (%s) from %s", loot_name, game_name, publisher)
 
                 elif PrimeLooter.exists(tab, "div[data-test-selector=ProgressBarSection]"):
                     log.warning(

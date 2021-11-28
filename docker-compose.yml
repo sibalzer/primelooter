@@ -7,5 +7,6 @@ services:
     volumes:
       - ./cookies.txt:/app/cookies.txt # must exist before launching
       - ./publishers.txt:/app/publishers.txt # must exist before launching
+      - ./game_codes.txt:/app/game_codes.txt # must exist before launching
     environment:
       - TZ=Europe/Berlin

@@ -2,6 +2,7 @@
 *.log
 cookies.txt
 publishers.txt
+game_codes.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
