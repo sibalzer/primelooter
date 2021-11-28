@@ -6,6 +6,7 @@ import time
 import traceback
 import json
 import typing
+from asyncio import Lock
 
 from playwright.sync_api import sync_playwright, Browser, BrowserContext, Cookie, Error, Page
 
@@ -20,6 +21,25 @@ logging.basicConfig(
 )
 
 log = logging.getLogger()
+
+code_file_lock = Lock()
+code_file_path = "gamecode.txt"
+
+
+class Offer:
+    title: str
+    publisher: str
+    tags: list[str]
+    is_claimed: bool
+
+
+class IngameLoot(Offer):
+    journey_url: str
+
+
+class FreeGame(Offer):
+    grants_code: bool
+    journey_url: str
 
 
 class AuthException(Exception):
@@ -54,6 +74,12 @@ class PrimeLooter():
             return True
         return False
 
+    @staticmethod
+    def code_to_file(game: str, publisher: str, plattform: str, code: str):
+        # async with code_file_lock:
+        with open(code_file_path, "at") as f:
+            f.write(f"{game} by {publisher} ({plattform}): {code}")
+
     def auth(self) -> None:
         with self.page.expect_response(lambda response:  'https://gaming.amazon.com/graphql' in response.url and 'currentUser' in response.json()['data']) as response_info:
             log.debug('get auth info')
@@ -69,11 +95,36 @@ class PrimeLooter():
                 raise AuthException(
                     'Authentication: Not a valid Twitch Prime account. (Loot can only be redeemed with an Amazon Prime subscription and a connected Twitch Prime account)')
 
-    def get_offers(self) -> typing.List:
+    def get_offers(self) -> tuple(list[FreeGame], list[IngameLoot]):
+        free_game = list[FreeGame]
+        ingame_loot = list[IngameLoot]
+
         with self.page.expect_response(lambda response:  'https://gaming.amazon.com/graphql' in response.url and 'primeOffers' in response.json()['data']) as response_info:
             log.debug('get offers')
             self.page.goto('https://gaming.amazon.com/home')
-            return response_info.value.json()['data']['primeOffers']
+            prime_offers = response_info.value.json()['data']['primeOffers']
+
+            for offer in prime_offers:
+                tags = []
+                for tag in offer['tags']:
+                    tags.insert(tag['tag'])
+
+                if 'FGWP' in tags:
+                    game = FreeGame()
+                    game.title = offer['title']
+                    game.publisher = offer['content']['publisher']
+                    game.is_claimed = offer['isClaimed']
+                    game.tags = tags
+                    game.grants_code = offer['grants_code']
+                    free_game.insert(game)
+
+                elif 'Journey' in offer.tags:
+                    loot = IngameLoot()
+                    loot.title = offer['title']
+                    loot.publisher = offer['content']['publisher']
+                    loot.tags = tags
+                    loot.journey_url = offer['content']['externalURL']
+                    ingame_loot.insert(loot)
 
     @staticmethod
     def check_eligibility(offer: dict) -> bool:
@@ -87,6 +138,62 @@ class PrimeLooter():
             return offer['self']['eligibility']['canClaim']
         raise Exception(
             f'Could not check offer eligibility status\n{json.dumps(offer, indent=4)}')
+
+    def claim_game(self, url):
+        tab = self.context.new_page()
+        try:
+            with tab.expect_response(lambda response:  'https://gaming.amazon.com/graphql' in response.url and 'journey' in response.json()['data']) as response_info:
+                log.debug('get game title')
+                tab.goto(url)
+                game_name = response_info.value.json(
+                )['data']['journey']['assets']['title']
+
+            log.debug("Try to claim %s from %s", game_name, publisher)
+            tab.wait_for_selector(
+                'div[data-a-target=loot-card-available]')
+
+            loot_cards = tab.query_selector_all(
+                'div[data-a-target=loot-card-available]')
+
+            for loot_card in loot_cards:
+                loot_name = loot_card.query_selector(
+                    'h3[data-a-target=LootCardSubtitle]').text_content()
+                log.debug("Try to claim loot %s from %s by %s",
+                          loot_name, game_name, publisher)
+
+                claim_button = loot_card.query_selector(
+                    'button[data-test-selector=AvailableButton]')
+                if not claim_button:
+                    log.warning(
+                        "Could not claim %s from %s by %s (in-game loot)", loot_name, game_name, publisher)
+                    continue
+
+                claim_button.click()
+                tab.wait_for_load_state('networkidle')
+
+                # validate
+                tab.wait_for_selector(
+                    "div[data-a-target=gms-base-modal]")
+
+                if PrimeLooter.exists(tab, 'div.gms-success-modal-container'):
+                    log.info("Claimed %s (%s)", loot_name, game_name)
+
+                elif PrimeLooter.exists(tab, "div[data-test-selector=ProgressBarSection]"):
+                    log.warning(
+                        "Could not claim %s from %s by %s (account not connected)", loot_name, game_name, publisher)
+                else:
+                    log.warning(
+                        "Could not claim %s from %s by %s (unknown error)", loot_name, game_name, publisher)
+                if tab.query_selector('button[data-a-target=close-modal-button]'):
+                    tab.query_selector(
+                        'button[data-a-target=close-modal-button]').click()
+        except Error as ex:
+            print(ex)
+            traceback.print_tb(ex.__traceback__)
+            log.error(
+                "An error occured (%s/%s)! Did they make some changes to the website? Please report @github if this happens multiple times.", publisher, game_name)
+        finally:
+            tab.close()
 
     def claim_external(self, url, publisher):
         tab = self.context.new_page()
@@ -180,6 +287,9 @@ class PrimeLooter():
         if dump:
             print(self.page.query_selector('div.home').inner_html())
         offers = self.get_offers()
+
+        with open("dump.txt", "x") as f:
+            f.write(json.dumps(offers))
 
         not_claimable_offers = [offer for offer in offers if offer.get(
             'linkedJourney') is None and offer.get('self') is None]
