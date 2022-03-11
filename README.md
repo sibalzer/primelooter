@@ -1,3 +1,5 @@
+> THIS PROJECT IS NO LONGER MAINTAINED! Please use [srhinos fork](https://github.com/srhinos/primelooter) from now on.
+
 # Primelooter
 
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/sibalzer/primelooter?label=version)
